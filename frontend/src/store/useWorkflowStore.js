@@ -31,8 +31,8 @@ export const useStore = create((set, get) => ({
     selectedId: null, dirty: false, run: emptyRun(), panelTab: 'configure',
   }),
   load: (wf) => set({
-    workflowId: wf.id, name: wf.name, nodes: (wf.nodes || []).map(toFlowNode),
-    edges: (wf.edges || []).map(toFlowEdge), selectedId: null, dirty: false,
+    workflowId: wf.id, name: wf.name, nodes: (wf.graph?.nodes || wf.nodes || []).map(toFlowNode),
+    edges: (wf.graph?.edges || wf.edges || []).map(toFlowEdge), selectedId: null, dirty: false,
     run: emptyRun(), panelTab: 'configure',
   }),
   markSaved: (id) => set({ workflowId: id, dirty: false }),
@@ -92,14 +92,14 @@ export const useStore = create((set, get) => ({
   })),
   applyEvent: (ev) => set((s) => {
     const run = { ...s.run };
-    if (ev.type === 'node_status') {
+    if (ev.type === 'node_status' || ev.type === 'node_update') {
       run.nodeStatus = {
         ...run.nodeStatus,
         [ev.node_id]: { ...run.nodeStatus[ev.node_id], status: ev.status, output: ev.output ?? run.nodeStatus[ev.node_id]?.output, error: ev.error, attempts: ev.attempts },
       };
     } else if (ev.type === 'log') {
       run.logs = [...run.logs, ev];
-    } else if (ev.type === 'execution_done') {
+    } else if (ev.type === 'execution_done' || ev.type === 'execution_finished') {
       run.status = ev.status;
     }
     return { run };

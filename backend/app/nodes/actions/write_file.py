@@ -43,11 +43,15 @@ class WriteFileNode(BaseNode):
         def _write() -> int:
             target.parent.mkdir(parents=True, exist_ok=True)
             with open(target, "a" if mode == "append" else "w", encoding="utf-8") as fh:
-                if mode == "append" and content and not content.endswith("\n"):
-                    fh.write(content + "\n")
+                if mode == "append" and content:
+                    # Keep appended content separated from existing content.
+                    if target.exists() and target.stat().st_size > 0:
+                        fh.write("\n")
+                    fh.write(content)
+                    if not content.endswith("\n"):
+                        fh.write("\n")
                 else:
                     fh.write(content)
-            return len(content.encode("utf-8"))
 
         n = await asyncio.to_thread(_write)
         rel = target.relative_to(settings.output_dir.resolve())

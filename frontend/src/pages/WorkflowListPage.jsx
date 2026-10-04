@@ -23,9 +23,10 @@ export default function WorkflowListPage() {
   const runNow = async (w) => {
     try {
       const wf = await api.getWorkflow(w.id);
-      const manual = (wf.nodes || []).find((n) => n.type === 'manual');
+      const graph = wf.graph || { nodes: [], edges: [] };
+      const manual = graph.nodes.find((n) => (n.data?.kind || n.type) === 'manual');
       let input = {};
-      try { input = manual?.config?.input ? JSON.parse(manual.config.input) : {}; } catch { /* use empty input */ }
+      try { input = manual?.data?.config?.input ? JSON.parse(manual.data.config.input) : {}; } catch { /* use empty input */ }
       const { execution_id } = await api.runWorkflow(w.id, input);
       navigate(`/runs?open=${execution_id}`);
     } catch (e) { notify(e.message, 'error'); }

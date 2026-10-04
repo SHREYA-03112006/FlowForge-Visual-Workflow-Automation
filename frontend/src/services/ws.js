@@ -1,10 +1,3 @@
-// Live run updates. Connects to /ws/executions/:id and falls back to polling
-// GET /api/executions/:id if the socket can't connect or drops mid-run.
-//
-// Events the backend should send (JSON, one per message):
-//   {type: "node_status", node_id, status, output?, error?, attempts?}
-//   {type: "log", node_id, level, message, timestamp}
-//   {type: "execution_done", status}
 import { api, isFinal, normalizeStatus } from './api';
 
 function wsUrl(path) {
@@ -34,11 +27,11 @@ export function streamExecution(executionId, { onEvent, onSnapshot, onClose }) {
       const ex = await api.getExecution(executionId);
       onSnapshot(ex);
       if (isFinal(ex.status)) return finish();
-    } catch { /* keep polling */ }
+    } catch {}
+    polling = false;
     pollTimer = setTimeout(poll, 1000);
   };
 
-  // Catch anything that happened before the socket connected.
   api.getExecution(executionId).then((ex) => {
     if (done) return;
     onSnapshot(ex);
@@ -52,8 +45,8 @@ export function streamExecution(executionId, { onEvent, onSnapshot, onClose }) {
         const ev = JSON.parse(msg.data);
         if (ev.status) ev.status = normalizeStatus(ev.status);
         onEvent(ev);
-        if (ev.type === 'execution_done') finish();
-      } catch { /* ignore malformed frames */ }
+        if (ev.type === 'execution_finished') finish();
+      } catch {}
     };
     const fallback = () => { if (!done && !polling) poll(); };
     ws.onerror = fallback;
@@ -61,5 +54,6 @@ export function streamExecution(executionId, { onEvent, onSnapshot, onClose }) {
   } catch {
     poll();
   }
+
   return finish;
 }

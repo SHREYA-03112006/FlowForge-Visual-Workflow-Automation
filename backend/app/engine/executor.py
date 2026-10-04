@@ -273,11 +273,13 @@ class WorkflowExecutor:
             parents = {e["source"] for e in self.incoming[nid]}
             if parents:
                 await asyncio.gather(*(self.done[p].wait() for p in parents))
+            upstream_failed = any(
+                self.skip_cause.get(e["source"]) == "upstream"
+                or self.state[e["source"]] == NodeState.FAILED
+                for e in self.incoming[nid]
+            )
             active = [e for e in self.incoming[nid] if self._edge_active(e)]
-            if nid != self.root and not active:
-                upstream_failed = any(self.skip_cause.get(e["source"]) == "upstream"
-                                      or self.state[e["source"]] == NodeState.FAILED
-                                      for e in self.incoming[nid])
+            if nid != self.root and (upstream_failed or not active):
                 self.skip_cause[nid] = "upstream" if upstream_failed else "branch"
                 self.state[nid] = NodeState.SKIPPED
                 await self.recorder.node_skipped(
