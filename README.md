@@ -97,25 +97,44 @@ Built for **ALGOTHON'26 — ALG-AUTO-01: Visual Workflow Automation**.
                     │     Persistence     │
                     └─────────────────────┘
 
-🛠️ Technology Stack
-Frontend
-- React
-- JavaScript
-- React Flow
-- Zustand
-- Vite
-Backend
-- Python
-- FastAPI
-- Pydantic
-- SQLAlchemy
-Database
-- SQLite
-Workflow & Scheduling
-- Custom workflow execution engine
-- APScheduler
-- REST APIs
-- WebSocket support
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 18** — User interface
+- **React Flow / @xyflow/react** — Visual workflow editor and node-based canvas
+- **Zustand** — Frontend state management
+- **React Router** — Page navigation
+- **Lucide React** — UI icons
+- **Vite** — Frontend development and build tool
+
+### Backend
+- **Python** — Core backend and workflow execution
+- **FastAPI** — REST API and backend services
+- **Pydantic** — Data validation and API schemas
+- **SQLAlchemy** — Database interaction
+- **Uvicorn** — ASGI server
+
+### Workflow Engine
+- **Custom Graph Execution Engine** — Executes workflow nodes and manages dependencies
+- **Conditional Execution** — Supports decision-based workflow paths
+- **Parallel Execution** — Executes independent branches concurrently
+- **Retry Handling** — Handles failed node execution with retry logic
+- **Scheduler** — Supports scheduled workflow execution
+- **WebSockets** — Real-time execution updates
+
+### Database
+- **SQLite** — Local workflow and execution data storage
+- **SQLAlchemy ORM** — Database abstraction layer
+
+### Machine Learning
+- **scikit-learn** — Machine learning functionality for classification workflows
+
+### Development & Deployment
+- **Git & GitHub** — Version control and source-code management
+- **Docker** — Containerization
+- **Docker Compose** — Multi-service setup
+- **npm** — Frontend package management
+- **pytest** — Backend testing
 Machine Learning
 - scikit-learn
 Development & Deployment
