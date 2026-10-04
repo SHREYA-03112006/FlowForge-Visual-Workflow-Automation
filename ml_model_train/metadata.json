@@ -1,0 +1,14 @@
+{
+  "labels": [
+    "account",
+    "billing",
+    "general",
+    "technical"
+  ],
+  "n_samples": 320,
+  "cv_accuracy_mean": 0.9961,
+  "test_accuracy": 0.9844,
+  "trained_on_full_data": false,
+  "sklearn_version": "1.8.0",
+  "trained_at_utc": "2026-10-04T11:48:00+00:00"
+}

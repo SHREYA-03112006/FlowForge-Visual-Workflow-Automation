@@ -1,0 +1,66 @@
+{
+  "n_test": 64,
+  "accuracy": 0.9844,
+  "macro_f1": 0.9844,
+  "per_class": {
+    "account": {
+      "precision": 1.0,
+      "recall": 0.9375,
+      "f1-score": 0.9677,
+      "support": 16.0
+    },
+    "billing": {
+      "precision": 0.9412,
+      "recall": 1.0,
+      "f1-score": 0.9697,
+      "support": 16.0
+    },
+    "general": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 16.0
+    },
+    "technical": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 16.0
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "account",
+      "billing",
+      "general",
+      "technical"
+    ],
+    "matrix": [
+      [
+        15,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        16,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        16,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        16
+      ]
+    ]
+  },
+  "note": "Synthetic, template-based data: scores overstate real-world accuracy."
+}

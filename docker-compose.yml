@@ -1,0 +1,42 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: algo-workflow-backend
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-sqlite:///./data/workflows.db}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      APP_ENV: ${APP_ENV:-development}
+    volumes:
+      - workflow_data:/app/data
+      - ./backend:/app
+      - ./api_integrations:/app/api_integrations
+      - ./ml_model_train:/app/ml_model_train
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: algo-workflow-frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+      VITE_WS_URL: ${VITE_WS_URL:-ws://localhost:8000}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    command: npm run dev -- --host 0.0.0.0
+    restart: unless-stopped
+
+volumes:
+  workflow_data:
